@@ -1,5 +1,6 @@
 const User = require('../models/userDetails');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 
 function isStringValid(string){
@@ -41,7 +42,40 @@ const signup = async (req,res,next) =>{
       }
 }
 
+function generateAccessToken(id,name){
+  return jwt.sign({userId : id, name: name}, process.env.TOKEN);
+}
+
+const login = async (req,res) => {
+  try{
+    const { email, password } = req.body;
+    if(isStringValid(email) || isStringValid(password)){
+      return res.status(400).json({message: 'Email id or password is missing',success:false})
+    }
+    console.log(password);
+    const user = await User.findAll({where :{email}})
+      if(user.length >0){
+        bcrypt.compare(password,user[0].password,(err,result) => {
+          if(err){
+            return res.status(500).json({ message: 'Something went wrong', success: false });
+          }
+          if(result === true){
+            res.status(200).json({success : true,user: user[0],message:"User Logged in Successfully", token: generateAccessToken(user[0].id,user[0].name)});
+          }
+          else{
+          return res.status(201).json({success : false,message:"password is incorrect"})
+        }
+      })
+      }else {
+        return res.status(404).json({success:false,message:'User Doesnot exist'})
+      }
+  }catch(err){
+      res.status(500).json({message: err,success: false})
+  }
+}
+
 
 module.exports = {
     signup,
+    login
 }
