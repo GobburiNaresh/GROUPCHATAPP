@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../css/login.css" />
+    <title>Login or Sign Up</title>
+  </head>
+  <body>
+    <h2>“Chat together, stay together.”</h2>
+    <div class="container" id="container">
+      <div class="form-container sign-up-container">
+        <form onSubmit="signup(event)" method="post">
+          <h1>Create Account</h1>
+          <span>fill your credentials here</span>
+          <input type="text" placeholder="Name" name="name" id="name"  required/>
+          <input type="email" placeholder="Email" name="email" id="email" required />
+          <input type="text" placeholder="Contact No." pattern="[0-9]*" name="number" id="number" required/>
+          <input  type="password" id="password" placeholder="Password" name="password" required />
+          <button id="signUpBtn">Sign Up</button>
+        </form>
+        <div id="message" style="color: red;"></div>
+      </div>
+      <div class="form-container sign-in-container">
+          <form onSubmit="login(event)"  method="post">
+          <h1>Login</h1>
+          <span>use your previous credentials</span>
+          <input type="email" placeholder="Email" name="loginEmail" id="loginEmail" required />
+          <input  type="password" id="loginPassword" placeholder="Password" name="loginPassword" required />
+          <a href="forgotPassword.html">Forgot your password?</a>
+          <button id="loginBtn">Login</button>
+        </form>
+      </div>
+      <div class="overlay-container">
+        <div class="overlay">
+          <div class="overlay-panel overlay-left">
+            <h1>Welcome Back!</h1>
+            <p>
+              To keep connected with us please login with your personal info
+            </p>
+            <button class="ghost" id="signIn">Login</button>
+          </div>
+          <div class="overlay-panel overlay-right">
+            <h1>Hello,Friend!</h1>
+            <p>Enter your personal details and start journey with us</p>
+            <button class="ghost" id="signUp">Sign Up</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.2/axios.min.js"
+    integrity="sha512-QTnb9BQkG4fBYIt9JGvYmxPpd6TBeKp6lsUrtiVQsrJ9sb33Bn9s0wMQO9qVBFbPX3xHRAsBHvXlcsrnJjExjg=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+  <script src="../js/signup.js"></script>
+  <script src="../js/login.js"></script>
+</html>
