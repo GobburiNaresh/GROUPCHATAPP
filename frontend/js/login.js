@@ -27,7 +27,7 @@ async function login(event) {
             localStorage.setItem('username', response.data.user.name);
             localStorage.setItem('token',response.data.token);
             console.log(response.data.token);
-            
+            window.location.href = '../views/mainPage.html';
           }
           else if(201){
             window.alert('invalid password');

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GROUPCHAT</title>
+    <link rel="stylesheet" href="../css/mainPage.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <div class=outer-group-list>
+        <div class="group-list" id="group_list">
+            <div class="group-header">Groups</div>
+            <form class="group-list-form" id="groupCreateFrom">
+                <input type="text" id="group-name-input" placeholder="Name Of Group" required>
+                <button id="create-group-button" type="submit">Create Group</button>
+            </form>
+            <div class="xxx">
+                <ul id="list_of_groups"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="group-list" id="all-user-list" style="display: none;">
+        <div>
+            <div class="group-header">Global Users List
+                <button id="close-button-user-list" class="close-button" type="button"
+                    onclick="closeUserList()">×</button>
+            </div>
+        </div>
+        <div class="xxx">
+            <ul id="list_of_users">
+            </ul>
+        </div>
+    </div>
+    <div class="outer-chat-container" id="outer_chat_container">
+        <div class="chat-container">
+            <div class="chat-header" id="chat-header-element">
+                CHAT
+                <div class="dropdown">
+                    <button class="dropdown-btn">
+                        <i class="fas fa-ellipsis-v"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <button id="add_users">Add Users</button>
+                        <button id="see_users">See Members</button>
+                        <button>Logout</button>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-messages">
+            </div>
+            <div class="chat-input">
+                <input type="text" id="message-input" placeholder="Type your message">
+                <button class="send-button" id="send-button" onclick="sendMessageToServer()">
+                    <i class="fas fa-paper-plane"></i> 
+                </button>
+            </div>
+        </div>
+    </div>
+    <script src="../js/mainPage.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</body>
+
+</html>

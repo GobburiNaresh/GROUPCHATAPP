@@ -1,0 +1,239 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #726c6c;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+.outer-chat-container{
+    padding: 25px;
+}
+.chat-container {
+    border: 2px solid #21272e;
+    background-color: #626369;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 800px;
+    max-width: 100%;
+    height: 650px;
+    display: flex;
+    flex-direction: column;
+}
+.group-list{
+    border: 2px solid #21272e;
+    background-color: #626369;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    max-width: 100%;
+    height: 650px;
+    display: flex;
+    flex-direction: column;
+   
+
+}
+.xxx{
+    width: 400px;
+    height: 600px;
+}
+#groupCreateFrom {
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    text-align: center; 
+}
+
+#group-name-input {
+    width: 85%; 
+    height: 100%;
+    padding: 3px;
+    border-radius:5px;
+}
+#create-group-button {
+    background-color: #72eb57;
+    width: 40%;
+    height: 100%;
+    border-radius:5px;
+}
+#create-group-button:hover {
+    background-color: #24441c;
+    
+}
+.group_button {
+    border: 2px solid #21272e;
+    background-color: #bab8c4;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
+    padding: 10px 20px;
+    align-items: center;
+    width: 88%;
+    max-width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.group_button span {
+    color: rgb(0, 0, 0);
+}
+.group-header {
+    background-color: #21272e;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    margin-bottom: 10px;
+}
+.chat-header {
+    background-color: #21272e;
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.chat-input {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+#message-input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 2px solid #21272e;
+    border-radius: 4px;
+    box-shadow: #010101;
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+#send-button {
+    background-color: #21272e;
+    color: #fff;
+    border: 2px solid #21272e;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+}
+
+
+.chat-messages {
+flex-grow: 1;
+overflow-y: auto;
+padding: 10px;
+display: flex;
+flex-direction: column;
+}
+
+.message-container {
+background-color: #e2d0d4;
+border-radius: 8px;
+margin: 8px;
+padding: 10px;
+max-width: 70%;
+}
+
+.message-container.user {
+align-self: flex-end;
+background-color: #52d726;
+color: #000000;
+}
+
+.message-sender {
+font-weight: bold;
+margin-bottom: 4px;
+}
+
+.message-text {
+word-wrap: break-word;
+}
+
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    color: #fbf5f5;
+    background-color: #0c0f38;
+    left: 45%;
+}
+
+#list_of_users {
+    max-height: 300px;
+    overflow: auto;
+}
+
+.group-header {
+    position: relative;
+}
+
+.close-button {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: transparent;
+    border: none;
+    color: red;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button-user-list:hover {
+    text-decoration: underline;
+}
+
+.close-button-user-list {
+    background-color: transparent;
+    border: none;
+    color: rgb(250, 245, 245);
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button-user-list:hover {
+    text-decoration: underline;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #e8d9d9;
+    min-width: 150px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    right: 0;
+    z-index: 1;
+}
+
+.dropdown-content button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    text-align: left;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.dropdown-content button:hover {
+    background-color: #9297e2;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
