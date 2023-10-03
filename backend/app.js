@@ -15,12 +15,14 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const userRoutes = require('./routes/signup');
+const messageRoutes = require('./routes/messages');
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use('/user',userRoutes);
+app.use('/user',messageRoutes)
 
 sequelize
   .sync()

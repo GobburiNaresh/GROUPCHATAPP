@@ -7,7 +7,7 @@ const authenticate =async (req,res,next) =>{
         if (!token) {
             return res.status(401).json({ success: false, message: 'Token is missing' });
         }
-        const decodedToken = jwt.verify(token, process.env.TOKEN);
+        const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
         const user = await User.findByPk(decodedToken.userId);
         if (!user) {
             return res.status(401).json({ success: false, message: 'User not found' });
