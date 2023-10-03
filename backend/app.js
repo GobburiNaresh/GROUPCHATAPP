@@ -22,7 +22,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 app.use('/user',userRoutes);
-app.use('/user',messageRoutes)
+app.use('/user',messageRoutes);
+
+User.hasMany(Message, { foreignKey: 'userId' });
+Message.belongsTo(User, { foreignKey: 'userId' });
+
 
 sequelize
   .sync()

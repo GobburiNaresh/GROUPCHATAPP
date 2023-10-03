@@ -43,7 +43,7 @@ const signup = async (req,res,next) =>{
 }
 
 function generateAccessToken(id,name){
-  return jwt.sign({userId : id, name: name}, process.env.TOKEN);
+  return jwt.sign({userId : id, name: name}, process.env.SECRET_KEY);
 }
 
 const login = async (req,res) => {

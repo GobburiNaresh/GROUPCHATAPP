@@ -2,11 +2,12 @@ const express = require('express');
 
 const router = express.Router();
 
-const userController = require('../controllers/messages');
+const messageController = require('../controllers/messages');
 const msgAuth = require('../middleware/auth');
 
-router.post('/message',msgAuth.authenticate,userController.postMessage);
-router.get('/getmessages',msgAuth.authenticate,userController.getMessage);
+router.post('/message',msgAuth.authenticate,messageController.postMessage);
+router.get('/getmessages',msgAuth.authenticate,messageController.getMessage);
+router.get('/allMessages/:id',msgAuth.authenticate, messageController.allMessage);
 
 
 module.exports = router;

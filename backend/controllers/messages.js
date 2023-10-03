@@ -14,7 +14,7 @@ const postMessage = async (req, res, next) => {
     await t.commit();
     const user = await User.findByPk(data.userId);
     console.log(user);
-    res.status(200).json({ newMessage: [data], user: user, token: generateAccessToken(data.userId, data.message) });
+    res.status(200).json({ newMessage: [data], token: generateAccessToken(data.userId, data.message) });
   } catch (err) {
     await t.rollback();
     console.error('Error posting message:', err);
@@ -28,29 +28,42 @@ function generateAccessToken(id, name) {
 
 const getMessage = async (req, res, next) => {
   try {
-    const msgId = req.query.messageid;
-    if (msgId == undefined || msgId == null) {
-      const message = await Message.findAll();
-      res.status(200).json({ allMessage: message, success: true });
-    } else {
-      const message = await Message.findAll();
-      const message10 = [];
-      let msgcount = 0;
-      for (let i = message.length - 1; i >= 0; i--) {
-        if (msgcount == 10)
-          break;
-        message10.unshift(message[i]);
-        msgcount++;
-      }
-      res.status(200).json({ allMessage: message10, success: true });
-    }
+    const messages = await Message.findAll({
+      include: [
+        {
+          model: User,
+          attribute: ['name'],
+        },
+      ],
+    });
+    console.log("*******", messages);
+    res.status(200).json({ allMessage: messages, success: true });
   } catch (err) {
     console.error('Failed to get messages:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 }
 
+ const allMessage = async function (req, res) {
+  console.log("bosy of new messages request", req.params);
+  let offsetMessageId = req.params.id;
+  try {
+      const newMessages = await Message.findAll({
+          where: {
+              id: {
+                  [sequelize.Op.gt]: offsetMessageId
+              }
+          }
+      })
+      res.status(200).json({ newMessages });
+  }
+  catch (error) {
+      console.log(error);
+  }
+}
+
 module.exports = {
   postMessage,
   getMessage,
+  allMessage
 }

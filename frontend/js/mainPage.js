@@ -10,17 +10,14 @@ async function sendMessageToServer() {
 
   const message = {
     message: messageText,
-    token: token,
   };
 
   try {
     const response = await axios.post('http://localhost:3000/user/message', { message }, {
-      headers: { Authorization:  token }, // Use 'Bearer' prefix for JWT token
+      headers: { Authorization:  token },
     });
     messageInput.value = '';
-    console.log('sent message to server', response.data.newMessage[0].message);
-    console.log('sent message id to server', response.data.newMessage[0].id);
-    localStorage.setItem('latest msg id', response.data.newMessage[0].id);
+    localStorage.setItem('id', response.data.newMessage[0].id);
     displayMessage("You", response.data.newMessage[0].message, true);
   } catch (error) {
     console.error('Error sending message:', error);
@@ -30,41 +27,45 @@ async function sendMessageToServer() {
 async function getAllMessagesFromDB() {
   const token = localStorage.getItem('token');
   const userId = localStorage.getItem('id');
-
-  if (!token || !userId) {
-    console.error('Token or user ID not found in localStorage');
-    return;
-  }
-
-  try {
-    const response = await axios.get('http://localhost:3000/user/getmessages', {
-      headers: { Authorization:  token  }, // Use 'Bearer' prefix for JWT token
-    });
-    console.log('response of all messages in global group', response);
-
-    clearChatMessages();
-    const messages = {};
-
-    for (let i = 0; i < response.data.allMessage.length; i++) {
-      let message = response.data.allMessage[i].message;
-      let id = response.data.allMessage[i].id;
-      let name = response.data.allMessage[i].user.name;
-
-      messages[id] = message;
-      var isUser = false;
-
-      if (response.data.allMessage[i].userId == userId) {
-        isUser = true;
-        displayMessage("You", message, isUser);
-      } else {
-        displayMessage(name, message, isUser);
-      }
+  setInterval( 
+    async() => {
+    if (!token || !userId) {
+      console.error('Token or user ID not found in localStorage');
+      return;
     }
 
-    localStorage.setItem('chatMessages', JSON.stringify(messages));
-  } catch (err) {
-    console.error(err);
-  }
+    try {
+      const response = await axios.get('http://localhost:3000/user/getmessages', {
+        headers: { Authorization:  token  }, 
+      });
+      console.log('response of all messages in global group', response);
+
+      clearChatMessages();
+      const messages = {};
+
+      for (let i = 0; i < response.data.allMessage.length; i++) {
+        let message = response.data.allMessage[i].message;
+        let id = response.data.allMessage[i].id;
+        let name = response.data.allMessage[i].user_detail.name;
+        console.log(name);
+
+        messages[id] = message;
+        var isUser = false;
+
+        if (response.data.allMessage[i].userId == userId) {
+          isUser = true;
+          displayMessage("You", message, isUser);
+        } else {
+          displayMessage(name, message, isUser);
+        }
+      }
+
+      localStorage.setItem('chatMessages', JSON.stringify(messages));
+    } catch (err) {
+      console.error(err);
+    }
+   }
+   ,1000);
 }
 
 function getAllMessagesFromLS() {
@@ -106,4 +107,28 @@ function displayMessage(sender, message, isUser) {
 
 displayMessage("Bot", "Hello! How can I help you today?", false);
 
+window.addEventListener('DOMContentLoaded', getAllMessagesFromDB);
+async function getAllNewMessagesFromDB() {
+  const latestMessageOfUserHasSentId = localStorage.getItem('latest msg id');
+  const userId = localStorage.getItem('id');
+  console.log("latestMessageOfUserHasId", latestMessageOfUserHasSentId);
+  try {
+      const response = await axios.get(`http://localhost:3000/user/allMessages/${latestMessageOfUserHasSentId}`);
+      console.log(response.data.newMessages);
+      for (let i = 0; i < response.data.newMessages.length; i++) {
+          console.log("--->", response.data.newMessages[i])
+          if (response.data.newMessages.userId == userId) {
 
+              displayMessage("You", response.data.newMessages[i].message, true);
+          }
+          else {
+              displayMessage("You", response.data.newMessages[i].message, false);
+          }
+          localStorage.setItem('latest msg id', (response.data.newMessages[i].id));
+      }
+
+  }
+  catch (errr) {
+      console.log('error fetching new messsages')
+  }
+}
