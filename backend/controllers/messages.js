@@ -7,17 +7,13 @@ const postMessage = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
     const { message} = req.body.message;
-    console.log('id>>a>>', req.user.id);
-    const data = await Message.create({ message: message,userId:req.user.id }, { transaction: t });
-    
-    console.log('data>>', data);
+    const data = await Message.create({ message: message,userDetailId:req.user.id }, { transaction: t });
     await t.commit();
     const user = await User.findByPk(data.userId);
     console.log(user);
     res.status(200).json({ newMessage: [data], token: generateAccessToken(data.userId, data.message) });
   } catch (err) {
     await t.rollback();
-    console.error('Error posting message:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 }
@@ -36,16 +32,13 @@ const getMessage = async (req, res, next) => {
         },
       ],
     });
-    console.log("*******", messages);
     res.status(200).json({ allMessage: messages, success: true });
   } catch (err) {
-    console.error('Failed to get messages:', err);
     res.status(500).json({ success: false, error: err.message });
   }
 }
 
  const allMessage = async function (req, res) {
-  console.log("bosy of new messages request", req.params);
   let offsetMessageId = req.params.id;
   try {
       const newMessages = await Message.findAll({
