@@ -7,7 +7,7 @@ const postMessage = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
     const { message} = req.body.message;
-    const data = await Message.create({ message: message,userDetailId:req.user.id }, { transaction: t });
+    const data = await Message.create({ message: message,userId:req.user.id }, { transaction: t });
     await t.commit();
     const user = await User.findByPk(data.userId);
     console.log(user);
@@ -32,6 +32,7 @@ const getMessage = async (req, res, next) => {
         },
       ],
     });
+    // console.log(messages);
     res.status(200).json({ allMessage: messages, success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });

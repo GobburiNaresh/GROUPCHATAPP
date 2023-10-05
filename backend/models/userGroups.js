@@ -9,6 +9,9 @@ const UserGroups = sequelize.define('user_groups', {
     groupGroupId:{
         type:Sequelize.INTEGER
     }
+},
+{
+    timestamps: false
 });
 
 
