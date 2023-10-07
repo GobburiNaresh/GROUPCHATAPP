@@ -262,11 +262,7 @@ function displayGroup(data) {
       const logoutButton = document.createElement('button');
       logoutButton.textContent = 'Logout';
 
-      logoutButton.addEventListener('click', function () {
-        console.log('>>>>>>')
-          logOutUser()
-          
-      });
+      logoutButton.addEventListener('click',logOutUser);
 
       // Append the dropdown button and content to the dropdown container
       dropdownContainer.appendChild(dropdownButton);
@@ -295,8 +291,9 @@ function displayGroup(data) {
 
 }
 
+//function logout
+
 function logOutUser() {
-  
   window.location.href = '../views/signup.html';
 }
 
@@ -421,7 +418,25 @@ async function deleteUsersFromGroup(userData, groupId, adminId) {
       // Create a cell for the "Add User" button
       const deleteButtonCell = document.createElement('td');
       const deleteButton = document.createElement('button');
-      addButton.textContent = 'Delete';
+      deleteButton.textContent = 'Delete';
+
+      deleteButton.addEventListener('click', async () => {
+         try {
+          const response = await axios.delete(`http://localhost:3000/groupuser/removeUserFromGroup/${groupId}/${adminId}`);
+          const userData = response.data.result;
+          deleteButton.textContent = 'X deleted';
+          deleteButton.style.backgroundColor = 'red';
+          deleteButton.disabled = true;
+          console.log('response',response)
+          await deleteUsersFromGroup(userData, groupId, adminId);
+          
+        } catch (error) {
+          console.error(error);
+        }
+      });
+    
+         
+
       deleteButtonCell.appendChild(deleteButton);
       userRow.appendChild(deleteButtonCell);
 
@@ -517,15 +532,14 @@ async function showAllUsersOfChatApp(groupId, adminId) {
 
 async function removeUserFromGroup(groupId, adminId) {
   try {
-   
-    const response = await axios.delete(`http://localhost:3000/groupuser/removeUserFromGroup/${groupId}/${adminId}`);
+    const response = await axios.get(`http://localhost:3000/groupuser/listOfGroupUsers/${groupId}`);
     const userData = response.data.result;
-    console.log('response',response)
+    console.log(userData);
     await deleteUsersFromGroup(userData, groupId, adminId);
-    
   } catch (error) {
-    console.error(error);
+    console.log(error);
   }
+  
 }
 
 
