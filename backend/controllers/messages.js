@@ -40,12 +40,12 @@ const getMessage = async (req, res, next) => {
 }
 
  const allMessage = async function (req, res) {
-  let offsetMessageId = req.params.id;
+  let messageId = req.params.id;
   try {
       const newMessages = await Message.findAll({
           where: {
               id: {
-                  [sequelize.Op.gt]: offsetMessageId
+                  [sequelize.Op.gt]: messageId
               }
           }
       })

@@ -26,6 +26,8 @@ async function login(event) {
             console.log(response.data.user.name);
             localStorage.setItem('username', response.data.user.name);
             localStorage.setItem('token',response.data.token);
+            localStorage.setItem('id',response.data.user.id);
+            console.log(response.data.user.id);
             console.log(response.data.token);
             window.location.href = '../views/mainPage.html';
           }

@@ -8,7 +8,8 @@
         "jsonwebtoken": "^9.0.0",
         "mysql2": "^2.3.3",
         "node": "^19.0.1",
-        "sequelize": "^6.25.5"
+        "sequelize": "^6.25.5",
+        "socket.io": "^4.7.2"
     },
     "name": "naresh",
     "version": "1.0.0",
@@ -23,4 +24,4 @@
     "author": "NARESH",
     "license": "ISC",
     "description": "chatApplication"
-  }
+}

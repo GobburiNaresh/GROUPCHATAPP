@@ -23,7 +23,7 @@ const userRoutes = require('./routes/signup');
 const messageRoutes = require('./routes/messages');
 const groupRoutes = require('./routes/group');
 const groupUserRoutes = require('./routes/groupUsers');
-const groupMessageRoutes = require('./routes/groupUsers');
+
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -33,7 +33,7 @@ app.use('/user',userRoutes);
 app.use('/user',messageRoutes);
 app.use('/group',groupRoutes);
 app.use('/groupuser',groupUserRoutes);
-app.use('/groupMessage',groupMessageRoutes);
+
 
 User.hasMany(Message,{ foreignKey: 'userId'})
 Message.belongsTo(User,{ foreignKey: 'userId'})
@@ -44,6 +44,8 @@ userGroups.belongsTo(Group, { foreignKey: 'groupGroupId' });
 
 User.belongsToMany(Group, {through:userGroups,as: 'group',foreignKey: 'userListUserId'} );
 Group.belongsToMany(User, {through:userGroups, as: 'users', foreignKey: 'groupGroupId'});
+
+groupMessages.belongsTo(User);
 
 
 
