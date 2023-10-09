@@ -1,3 +1,43 @@
+const socket = io('http://localhost:3000');
+window.addEventListener('DOMContentLoaded', getAllMessagesFromDB);
+
+
+socket.on('recieve-message', (message) => {
+console.log('>>>>>>>>>>',message)
+console.log(message.nameAndId.id)
+const userId = message.nameAndId.id
+const name = message.nameAndId.name
+console.log(userId)
+console.log(name)
+
+const id = localStorage.getItem('id');
+     if(userId == id){
+        displayMessage("you", message.data.message, true);
+    }
+     else{
+        displayMessage(name, message.data.message, false);
+    }
+});
+
+socket.on('recieve-group-message', (message) => {
+  console.log("group message recieved using sockets",message);
+  const userId = message.result.userListUserId
+  const name = message.nameAndId.name
+  console.log("group user name recieved using sockets",message.nameAndId.name);
+  // const name = message.nameAndId.name
+
+  const id = localStorage.getItem('id');
+       if(userId == id){
+          displayMessage("you", message.result.message, true);
+      }
+       else{
+          displayMessage(name, message.result.message, false);
+      }
+
+  });
+
+
+
 function closeUserList() {
     const userList = document.getElementById('all-user-list');
     userList.style.display = 'none';
@@ -10,6 +50,8 @@ async function sendMessageToServer() {
   const messageInput = document.getElementById('message-input');
   const messageText = messageInput.value;
   const token = localStorage.getItem('token');
+  console.log(token);
+
 
   if (!token) {
     console.error('Token not found in localStorage');
@@ -18,15 +60,19 @@ async function sendMessageToServer() {
 
   const message = {
     message: messageText,
+    token: token
   };
 
   try {
+    socket.emit('send-message', { message})
     const response = await axios.post('http://localhost:3000/user/message', { message }, {
       headers: { Authorization:  token },
     });
+    console.log(response);
     messageInput.value = '';
-    localStorage.setItem('id', response.data.newMessage[0].id);
-    displayMessage("You", response.data.newMessage[0].message, true);
+    console.log(response.data.newMessage.userId)
+    localStorage.setItem('id', response.data.newMessage.userId);
+    // displayMessage("You", response.data.newMessage.message, true);
   } catch (error) {
     console.error('Error sending message:', error);
   }
@@ -56,10 +102,8 @@ async function getAllMessagesFromDB() {
       for (let i = 0; i < response.data.allMessage.length; i++) {
         let message = response.data.allMessage[i].message;
         let id = response.data.allMessage[i].id;
-        // console.log(response.data.allMessage[i].user_detail)
         let name = response.data.allMessage[i].user_detail.name;
         localStorage.setItem('name',name);
-        // console.log(name);
 
         messages[id] = message;
 
@@ -118,7 +162,7 @@ function displayMessage(sender, message, isUser) {
 
 displayMessage( "Hello! How are u today?", false);
 
-window.addEventListener('DOMContentLoaded', getAllMessagesFromDB);
+// window.addEventListener('DOMContentLoaded', getAllNewMessagesFromDB);
 async function getAllNewMessagesFromDB() {
   const latestMessageOfUserHasSentId = localStorage.getItem('latest msg id');
   const userId = localStorage.getItem('id');
@@ -162,14 +206,16 @@ async function createGroup(e) {
     try {
         const response = await axios.post('http://localhost:3000/group/createGroup',group);
         console.log("group id after group creation", response);
-        displayGroup(response.data.result)
+        const data = response.data.result;
+        console.log(data);
+        displayGroup(data);
         } catch (error) {
             console.log(error);
         }
 }
 
-window.addEventListener('DOMContentLoaded', getAllGroupsOfUserFromDB);
-async function getAllGroupsOfUserFromDB() {
+window.addEventListener('DOMContentLoaded', getAllGroupsFromDB);
+async function getAllGroupsFromDB() {
   try {
       const userId = localStorage.getItem('id');
       console.log(userId)
@@ -283,12 +329,45 @@ function displayGroup(data) {
       chatMessages.innerHTML = '';
 
       const sendMessageButton = document.getElementById('send-button');
-      
+      sendMessageButton.onclick = sendMessageToGroupServer;
+
+      // getAllGroupMessagesFromDB(groupId);
+      // getAllNewGroupMessagesFromDB();
 
   });
 
   groupLists.appendChild(buttonItem);
 
+  ////sendMessage to group server//////
+  async function sendMessageToGroupServer() {
+    const messageInput = document.getElementById('message-input');
+    const messageText = messageInput.value;
+    const userId = localStorage.getItem('id');
+    const groupId = localStorage.getItem('groupId');
+
+    console.log('groupId', groupId);
+    const groupMessage ={
+      message: messageText,
+      userId: userId,
+      groupId: groupId
+    }
+    if (messageText.trim() !== '') {
+        console.log("message:", messageText);
+
+        try {
+          socket.emit('send-message-to-group',{ message: messageText, userId: userId, groupId: groupId })
+            const response = await axios.post('http://localhost:3000/user/groupMessage/addgroupMessage',groupMessage);
+            messageInput.value = '';
+            console.log("response after savinng group message", response.data)
+             localStorage.setItem('usergroupMessage', response.data.result.id);
+             localStorage.setItem('usergroupId', response.data.result.groupGroupId);
+            // displayMessage("You", response.data.message, true);
+            
+        } catch (error) {
+            console.error('Error sending message:', error);
+        }
+    }
+  }
 }
 
 //function logout
@@ -542,4 +621,78 @@ async function removeUserFromGroup(groupId, adminId) {
   
 }
 
+///groupMessages
+// async function getAllGroupMessagesFromDB(groupId) {
+//   // const groupId = localStorage.getItem('usergroupId');
+//   const userId = localStorage.getItem('id');
 
+//   try {
+//     const response = await axios.get('http://localhost:3000/user/groupMessage/fetchgroupMessage');
+
+//     console.log("response after clicking group", response);
+//     console.log('groupMessage', response.result);
+
+//     const messages = {};
+
+//     for (let i = 0; i < response.data.length; i++) {
+//       let message = response.data[i].message;
+//       let id = response.data[i].id;
+//       let name = response.data[i].user_list.name;
+//       messages[id] = message;
+
+//       var isUser = false;
+
+//       if (response.data[i].userListUserId == userId) {
+//         isUser = true;
+//       }
+
+//       displayMessage(name, message, isUser);
+//     }
+//   } catch (err) {
+//     console.log(err)
+//   }
+// }
+
+window.addEventListener('DOMContentLoaded', getAllNewGroupMessagesFromDB)
+async function getAllNewGroupMessagesFromDB() {
+  let groupId = localStorage.getItem('usergroupId');
+  console.log('groupId',groupId)
+  let groupMessage = localStorage.getItem('usergroupMessage');
+  const userId = localStorage.getItem('id');
+  console.log(userId)
+  // const token = localStorage.getItem('messageToken');
+  // console.log(token);
+
+  if (groupId == null) {
+    groupId = 0;
+  }
+  if (groupMessage == null) {
+    groupMessage = 0;
+  }
+
+  try {
+    const response = await axios.get(`http://localhost:3000/user/groupMessage/newGroupMessages/${groupMessage}/${groupId}`);
+    console.log(response.data.messages[0].message.length);
+
+    for (let i = 0; i < response.data.messages[0].message.length; i++) {
+      console.log("--->", response.data.messages[0].user_detail.name);
+      const name = response.data.messages[0].user_detail.name;
+      console.log(response.data.messages[0].userListUserId)
+      if (response.data.messages[0].userListUserId == userId) {
+        displayMessage("You", response.data.messages[0].message, true);
+        console.log(response.data.messages[0].message)
+      } else {
+        displayMessage(name, response.data.messages[0].message, false);
+      }
+
+      localStorage.setItem('groupMessageId', response.data.messages[0].id);
+    }
+  } catch (errr) {
+    console.log('error fetching new messages')
+  }
+}
+
+
+
+      
+  

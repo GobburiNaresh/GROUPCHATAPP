@@ -48,12 +48,49 @@ Group.belongsToMany(User, {through:userGroups, as: 'users', foreignKey: 'groupGr
 groupMessages.belongsTo(User);
 
 
+// const io = require("socket.io")(3000,{
+//   cors: {
+//     origin: ['http://localhost:3000']
+//   }
+// })
 
-sequelize
-  .sync({force:false})
-  .then(result => {
-    app.listen(process.env.PORT);
+// io.on("connection", socket => {
+//   console.log(socket.id);
+// })
+sequelize.sync({force:false})
+    .then(() => {
+        sequelize.options.logging = console.log;
+        console.log('Database and tables synced.');
+    })
+    .catch((error) => {
+        console.error('Error syncing database:', error);
+    });
+const server = app.listen(process.env.PORT,()=>{
+  console.log('Server is running on port 3000');
+});
+
+const io = require('socket.io')(server,{
+  cors:{
+      origin: '*'
+  }
+});
+
+io.on('connection',(socket)=>{
+  console.log('user connected');
+
+  socket.on('send-message',(message)=>{
+      console.log("message recieved using socket", message);
+       io.emit('recieve-message', message);
   })
-  .catch(err => {
-    console.log(err);
-  });
+
+})
+app.set('io', io);
+
+// sequelize
+//   .sync({force:false})
+//   .then(result => {
+//     app.listen(process.env.PORT);
+//   })
+//   .catch(err => {
+//     console.log(err);
+//   });

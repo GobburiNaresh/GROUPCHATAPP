@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "nodemon": "^3.0.1",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.7.2"
+  },
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "groupchatapp",
+  "main": "../views/signup.js",
+  "scripts": {
+    "start": "nodemon signup.js",
+    "start-server": "nodemon signup.js"
+  },
+  "author": "naresh",
+  "license": "ISC"
+}
