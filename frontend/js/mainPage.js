@@ -1,5 +1,4 @@
 const socket = io('http://localhost:3000');
-window.addEventListener('DOMContentLoaded', getAllMessagesFromDB);
 
 
 socket.on('recieve-message', (message) => {
@@ -78,9 +77,10 @@ async function sendMessageToServer() {
   }
 }
 
+window.addEventListener('DOMContentLoaded', getAllMessagesFromDB);
 async function getAllMessagesFromDB() {
   const token = localStorage.getItem('token');
-
+  console.log(token);
   const userId = localStorage.getItem('id');
   
   // setInterval( 
@@ -100,6 +100,7 @@ async function getAllMessagesFromDB() {
       const messages = {};
 
       for (let i = 0; i < response.data.allMessage.length; i++) {
+        console.log(response.data.allMessage.length)
         let message = response.data.allMessage[i].message;
         let id = response.data.allMessage[i].id;
         let name = response.data.allMessage[i].user_detail.name;
@@ -621,39 +622,8 @@ async function removeUserFromGroup(groupId, adminId) {
   
 }
 
-///groupMessages
-// async function getAllGroupMessagesFromDB(groupId) {
-//   // const groupId = localStorage.getItem('usergroupId');
-//   const userId = localStorage.getItem('id');
 
-//   try {
-//     const response = await axios.get('http://localhost:3000/user/groupMessage/fetchgroupMessage');
-
-//     console.log("response after clicking group", response);
-//     console.log('groupMessage', response.result);
-
-//     const messages = {};
-
-//     for (let i = 0; i < response.data.length; i++) {
-//       let message = response.data[i].message;
-//       let id = response.data[i].id;
-//       let name = response.data[i].user_list.name;
-//       messages[id] = message;
-
-//       var isUser = false;
-
-//       if (response.data[i].userListUserId == userId) {
-//         isUser = true;
-//       }
-
-//       displayMessage(name, message, isUser);
-//     }
-//   } catch (err) {
-//     console.log(err)
-//   }
-// }
-
-window.addEventListener('DOMContentLoaded', getAllNewGroupMessagesFromDB)
+// window.addEventListener('DOMContentLoaded', getAllNewGroupMessagesFromDB)
 async function getAllNewGroupMessagesFromDB() {
   let groupId = localStorage.getItem('usergroupId');
   console.log('groupId',groupId)

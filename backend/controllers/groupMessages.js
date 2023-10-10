@@ -21,17 +21,13 @@ const addGroupMessages = async function (req, res) {
         }})
         console.log('nameandId>>',nameAndId);
         io.emit('recieve-group-message', {result,nameAndId});
-        // const token = generateAccessToken(result.userId,result.message);
-        // console.log(">>>>>>",token);
         res.status(200).json({ result});
     } catch (error) {
         res.status(400).json({ message: "error while saving group message" })
         console.log("error while saving message", error);
     }
 }
-// function generateAccessToken(id, name) {
-//     return jwt.sign({ userId: id, name: name },process.env.SECRET_KEY); 
-//   }
+
 const fetchGroupMessages = async function (req, res) {
     const { groupid } = req.body;
     console.log('req.body',req.body);

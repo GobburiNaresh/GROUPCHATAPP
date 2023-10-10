@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 const secret_key=process.env.SECRET_KEY
 
 const postMessage = async (req, res, next) => {
-  // const t = await sequelize.transaction();
   try {
     const message = req.body.message.message;
     const token = req.body.message.token;
@@ -28,25 +27,14 @@ const postMessage = async (req, res, next) => {
         console.log('nameAndId',nameAndId);
         console.log('data',data);
         io.emit('recieve-message', {data,nameAndId});
-    // await t.commit();
-  
-    // const user = await User.findByPk(data.userId);
-    // console.log(user);
-    // res.status(200).json({ newMessage: [data], token: generateAccessToken(data.userId, data.message) });
-      res.status(200).json({ newMessage: data});
+        res.status(200).json({ newMessage: data});
         }
-        });
+      });
 
   } catch (err) {
-    // await t.rollback();
     res.status(500).json({ success: false, error: err.message });
   }
 }
-
-// function generateAccessToken(id, name) {
-//   return jwt.sign({ userId: id, name: name },process.env.SECRET_KEY); 
-// }
-
 const getMessage = async (req, res, next) => {
   try {
     const messages = await Message.findAll({
@@ -57,7 +45,7 @@ const getMessage = async (req, res, next) => {
         },
       ],
     });
-    // console.log(messages);
+    console.log(messages);
     res.status(200).json({ allMessage: messages, success: true });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
@@ -75,6 +63,7 @@ const getMessage = async (req, res, next) => {
           }
       })
       res.status(200).json({ newMessages });
+      console.log(newMessages);
   }
   catch (error) {
       console.log(error);

@@ -18,6 +18,7 @@ const Group = require('./models/group');
 const userGroups = require('./models/userGroups');
 const groupMessages = require('./models/groupMessages');
 const Files = require('./models/shareFiles');
+const Forgotpassword = require('./models/password')
 
 var cors = require('cors');
 app.use(cors({origin: "*"}));
@@ -29,7 +30,12 @@ const userRoutes = require('./routes/signup');
 const messageRoutes = require('./routes/messages');
 const groupRoutes = require('./routes/group');
 const groupUserRoutes = require('./routes/groupUsers');
-const fileRoutes = require('./routes/fileshare')
+const passwordRoutes = require('./routes/password');
+app.use('/file', upload.single('myfile'), fileRoutes)
+
+app.use('/', (req, res) => {
+    res.sendFile(path.join(__dirname, `${req.url}`));
+});
 
 
 
@@ -41,6 +47,7 @@ app.use('/user',messageRoutes);
 app.use('/group',groupRoutes);
 app.use('/groupuser',groupUserRoutes);
 app.use('/file',fileRoutes);
+app.use('/password', passwordRoutes);
 
 
 User.hasMany(Message,{ foreignKey: 'userId'})
@@ -57,16 +64,11 @@ groupMessages.belongsTo(User);
 
 Group.hasMany(Files);
 
+User.hasMany(Forgotpassword);
+Forgotpassword.belongsTo(User);
 
-// const io = require("socket.io")(3000,{
-//   cors: {
-//     origin: ['http://localhost:3000']
-//   }
-// })
 
-// io.on("connection", socket => {
-//   console.log(socket.id);
-// })
+
 sequelize.sync({force:false})
     .then(() => {
         sequelize.options.logging = console.log;
@@ -92,6 +94,19 @@ io.on('connection',(socket)=>{
       console.log("message recieved using socket", message);
        io.emit('recieve-message', message);
   })
+  new CronJob('0 0 * * *', async function() {
+    const chats = await Message.findAll();
+    console.log('daily chat',chats);
+
+    for(const chat of chats) {
+        await Archieve.create({ groupId: chat.groupId, userId: chat.userId, message: chat.message })
+        console.log('id',chat.id)
+        await Message.destroy({where: {id: chat.id} })
+    }
+  },
+  null,
+  true,
+  )
 
 })
 app.set('io', io);
@@ -104,3 +119,13 @@ app.set('io', io);
 //   .catch(err => {
 //     console.log(err);
 //   });
+
+// const io = require("socket.io")(3000,{
+//   cors: {
+//     origin: ['http://localhost:3000']
+//   }
+// })
+
+// io.on("connection", socket => {
+//   console.log(socket.id);
+// })
