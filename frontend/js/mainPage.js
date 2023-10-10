@@ -692,7 +692,31 @@ async function getAllNewGroupMessagesFromDB() {
   }
 }
 
+////files sharing
+const fileInput = document.getElementById('myfile');
+fileInput.addEventListener('input', handleSelectedFile = async(event) => {
+    try {
+        const file = event.target.files[0]; 
+        const formData = new FormData();
+        formData.append('myfile', file)
+        const groupId = localStorage.getItem('groupId');
+      
+        const token = localStorage.getItem('token');
+        const fileStored = await axios.post(`http://localhost:3000/file/filestored/${groupId}`, formData, 
+        {
+            headers: {
+                'Authorization': token
+            }
+        })
 
+        console.log("This is file storage", fileStored);
+
+        socket.emit("send-message",fileStored.data.message, groupId);   
+    }
+    catch(err) {
+        console.log("Some error in files", err);
+    }
+})
 
       
   

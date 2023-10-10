@@ -5,6 +5,11 @@ exports.app = app;
 const bodyParser = require("body-parser");
 const path = require('path');
 
+const multer = require('multer');
+const upload = multer();
+
+const CronJob = require('cron').CronJob;
+
 const sequelize = require('./util/database');
 
 const User = require('./models/userDetails');
@@ -12,6 +17,7 @@ const Message = require('./models/messages')
 const Group = require('./models/group');
 const userGroups = require('./models/userGroups');
 const groupMessages = require('./models/groupMessages');
+const Files = require('./models/shareFiles');
 
 var cors = require('cors');
 app.use(cors({origin: "*"}));
@@ -23,6 +29,7 @@ const userRoutes = require('./routes/signup');
 const messageRoutes = require('./routes/messages');
 const groupRoutes = require('./routes/group');
 const groupUserRoutes = require('./routes/groupUsers');
+const fileRoutes = require('./routes/fileshare')
 
 
 
@@ -33,6 +40,7 @@ app.use('/user',userRoutes);
 app.use('/user',messageRoutes);
 app.use('/group',groupRoutes);
 app.use('/groupuser',groupUserRoutes);
+app.use('/file',fileRoutes);
 
 
 User.hasMany(Message,{ foreignKey: 'userId'})
@@ -46,6 +54,8 @@ User.belongsToMany(Group, {through:userGroups,as: 'group',foreignKey: 'userListU
 Group.belongsToMany(User, {through:userGroups, as: 'users', foreignKey: 'groupGroupId'});
 
 groupMessages.belongsTo(User);
+
+Group.hasMany(Files);
 
 
 // const io = require("socket.io")(3000,{
